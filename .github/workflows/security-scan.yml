@@ -1,19 +1,29 @@
-name: CI Security Scan
+name: ASVP CI/CD Security Scan
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
 
 jobs:
-  scan:
+  security-scan:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Run scan
+      - name: Run ASVP Security Scan
         run: |
-          echo "ASVP Security Scan Running..."
-          echo "Target: https://staging.example.com"
+          curl -X POST https://your-asvp-instance/api/cicd/scan \
+          -H "Authorization: Bearer ${{ secrets.ASVP_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "targetUrl": "https://juice-shop.herokuapp.com/",
+            "scanProfile": "standard",
+            "waitForCompletion": true,
+            "failThresholds": {
+              "critical": 0,
+              "high": 5
+            }
+          }'
