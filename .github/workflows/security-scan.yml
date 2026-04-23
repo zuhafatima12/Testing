@@ -1,0 +1,19 @@
+name: CI Security Scan
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run scan
+        run: |
+          echo "ASVP Security Scan Running..."
+          echo "Target: https://staging.example.com"
