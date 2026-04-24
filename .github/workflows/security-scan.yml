@@ -14,16 +14,23 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run ASVP Security Scan
+        env:
+          ASVP_TOKEN: ${{ secrets.ASVP_API_TOKEN }}
         run: |
-          curl -X POST https://your-asvp-instance/api/cicd/scan \
-          -H "Authorization: Bearer ${{ secrets.ASVP_API_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -d '{
-            "targetUrl": "https://juice-shop.herokuapp.com/",
-            "scanProfile": "standard",
-            "waitForCompletion": true,
-            "failThresholds": {
-              "critical": 0,
-              "high": 5
-            }
-          }'
+          echo "Starting ASVP Scan..."
+
+          RESPONSE=$(curl -s -X POST "https://your-asvp-instance/api/cicd/scan" \
+            -H "Authorization: Bearer $ASVP_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "targetUrl": "https://juice-shop.herokuapp.com/",
+              "scanProfile": "standard",
+              "waitForCompletion": true,
+              "failThresholds": {
+                "critical": 0,
+                "high": 5
+              }
+            }')
+
+          echo "Response:"
+          echo "$RESPONSE"
